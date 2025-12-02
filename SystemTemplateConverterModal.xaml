@@ -1,0 +1,90 @@
+<Window x:Class="WebScraper.SystemTemplateConverterModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WebScraper"
+        mc:Ignorable="d"
+        Title="Sistem Şablonundan Dönüştür" Height="400" Width="600"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F5F5F5"
+        FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Başlık -->
+        <TextBlock Grid.Row="0" Text="Sistem Şablonundan Sözleşmeli Personel Şablonuna Dönüştürme"
+                  FontSize="16" FontWeight="Bold" Foreground="#2E7D32"
+                  FontFamily="pack://application:,,,/Fonts/Poppins-Bold.ttf#Poppins"
+                  HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <!-- Açıklama -->
+        <TextBlock Grid.Row="1" TextWrapping="Wrap"
+                  Margin="0,0,0,15" FontSize="13">
+            Bu özellik, sisteminizdeki personel verilerini alıp Sözleşmeli Personel şablonuna dönüştürür.
+            Dönüştürülen dosya otomatik olarak 'convert' klasörüne kaydedilecektir.
+        </TextBlock>
+
+        <!-- Kaynak dosya seçimi -->
+        <GroupBox Grid.Row="2" Header="Kaynak Dosya" Margin="0,0,0,15"
+                 FontWeight="Bold" FontFamily="pack://application:,,,/Fonts/Poppins-Bold.ttf#Poppins">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Dönüştürülecek sistem şablonu dosyasını seçin:"
+                          Margin="0,0,0,10" TextWrapping="Wrap"
+                          FontWeight="Normal" FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins"/>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="txtOutputPath" IsReadOnly="True"
+                            Margin="0,0,10,0" Padding="5"
+                            FontWeight="Bold"
+                            FontFamily="pack://application:,,,/Fonts/Poppins-Bold.ttf#Poppins"
+                            VerticalAlignment="Center"/>
+
+                    <Button x:Name="btnBrowse" Content="Gözat..." Grid.Column="1"
+                           Padding="15,5" FontWeight="Normal"
+                           FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins"
+                           Click="btnBrowse_Click"/>
+                </Grid>
+            </Grid>
+        </GroupBox>
+
+        <!-- İlerleme -->
+        <ProgressBar x:Name="progressBar" Grid.Row="3" Height="20" Margin="0,0,0,15"
+                    Visibility="Collapsed" IsIndeterminate="True"/>
+
+        <!-- Durum mesajı -->
+        <TextBlock x:Name="txtStatus" Grid.Row="4" TextWrapping="Wrap"
+                  Foreground="#666" FontStyle="Italic" VerticalAlignment="Top"/>
+
+        <!-- Butonlar -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnCancel" Content="İptal" Width="80" Height="30"
+                   Margin="0,0,10,0" FontWeight="Normal"
+                   FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins"
+                   Click="btnCancel_Click"/>
+            <Button x:Name="btnConvert" Content="Dönüştür" Width="100" Height="30"
+                   Background="#4CAF50" Foreground="White" FontWeight="Bold"
+                   FontFamily="pack://application:,,,/Fonts/Poppins-Bold.ttf#Poppins"
+                   Click="btnConvert_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

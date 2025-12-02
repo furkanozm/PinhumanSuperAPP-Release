@@ -1,0 +1,215 @@
+<Window x:Class="WebScraper.SecuritySetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Güvenlik Kodu Oluştur"
+        Width="520"
+        Height="740"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Güvenlik kodu belirleyin"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Foreground="#111827"/>
+            <TextBlock Text="Uygulamalara erişmeden önce doğrulama için 6 haneli bir PIN, 6 adet yedek kod ve iki güvenlik sorusu oluşturmanız gerekir."
+                       FontSize="13"
+                       Foreground="#4B5563"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Background="#F8FAFC"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16"
+                Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="6 Haneli PIN"
+                           FontWeight="SemiBold"
+                           Foreground="#0F172A"/>
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <TextBlock Text="PIN"
+                                   FontSize="12"
+                                   Foreground="#475569"/>
+                        <PasswordBox x:Name="txtPin"
+                                     Height="36"
+                                     FontSize="16"
+                                     PreviewTextInput="NumericOnly_PreviewTextInput"
+                                     MaxLength="6"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                        <TextBlock Text="PIN (Tekrar)"
+                                   FontSize="12"
+                                   Foreground="#475569"/>
+                        <PasswordBox x:Name="txtPinConfirm"
+                                     Height="36"
+                                     FontSize="16"
+                                     PreviewTextInput="NumericOnly_PreviewTextInput"
+                                     MaxLength="6"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2"
+                Background="#FFFFFF"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="18">
+            <StackPanel>
+                <TextBlock Text="Güvenlik Soruları"
+                           FontWeight="SemiBold"
+                           Foreground="#0F172A"/>
+                <TextBlock Text="Cevaplar yalnızca sizin bildiğiniz bilgiler olmalıdır."
+                           FontSize="12"
+                           Foreground="#475569"
+                           Margin="0,2,0,10"/>
+
+                <TextBlock Text="Soru 1"
+                           FontSize="12"
+                           Foreground="#475569"/>
+                <ComboBox x:Name="txtQuestion1"
+                          SelectedIndex="-1"
+                          Margin="0,2,0,6"
+                          Height="34"
+                          IsEditable="True"
+                          IsTextSearchEnabled="True">
+                    <ComboBoxItem Content="...Seçiniz..." IsEnabled="False"/>
+                    <ComboBoxItem Content="İlk evcil hayvanınızın adı nedir?"/>
+                    <ComboBoxItem Content="İlk okulunuzun adı nedir?"/>
+                    <ComboBoxItem Content="En yakın çocukluk arkadaşınızın adı nedir?"/>
+                    <ComboBoxItem Content="İlk aracınızın markası nedir?"/>
+                    <ComboBoxItem Content="Çocukken yaşadığınız sokağın adı nedir?"/>
+                    <ComboBoxItem Content="Favori öğretmeninizin adı nedir?"/>
+                    <ComboBoxItem Content="İlk işinizde çalıştığınız şirket nedir?"/>
+                    <ComboBoxItem Content="Doğduğunuz şehir hangisidir?"/>
+                    <ComboBoxItem Content="En sevdiğiniz tatil yeri neresidir?"/>
+                    <ComboBoxItem Content="Çocukluk lakabınız nedir?"/>
+                </ComboBox>
+                <TextBlock Text="Cevap 1"
+                           FontSize="12"
+                           Foreground="#475569"/>
+                <TextBox x:Name="txtAnswer1"
+                         Margin="0,2,0,12"
+                         Height="30"/>
+
+                <TextBlock Text="Soru 2"
+                           FontSize="12"
+                           Foreground="#475569"/>
+                <ComboBox x:Name="txtQuestion2"
+                          SelectedIndex="-1"
+                          Margin="0,2,0,6"
+                          Height="34"
+                          IsEditable="True"
+                          IsTextSearchEnabled="True">
+                    <ComboBoxItem Content="...Seçiniz..." IsEnabled="False"/>
+                    <ComboBoxItem Content="İlk evcil hayvanınızın adı nedir?"/>
+                    <ComboBoxItem Content="İlk okulunuzun adı nedir?"/>
+                    <ComboBoxItem Content="En yakın çocukluk arkadaşınızın adı nedir?"/>
+                    <ComboBoxItem Content="İlk aracınızın markası nedir?"/>
+                    <ComboBoxItem Content="Çocukken yaşadığınız sokağın adı nedir?"/>
+                    <ComboBoxItem Content="Favori öğretmeninizin adı nedir?"/>
+                    <ComboBoxItem Content="İlk işinizde çalıştığınız şirket nedir?"/>
+                    <ComboBoxItem Content="Doğduğunuz şehir hangisidir?"/>
+                    <ComboBoxItem Content="En sevdiğiniz tatil yeri neresidir?"/>
+                    <ComboBoxItem Content="Çocukluk lakabınız nedir?"/>
+                </ComboBox>
+                <TextBlock Text="Cevap 2"
+                           FontSize="12"
+                           Foreground="#475569"/>
+                <TextBox x:Name="txtAnswer2"
+                         Margin="0,2,0,12"
+                         Height="30"/>
+
+                <Separator Margin="0,10,0,10"/>
+
+                <Grid Margin="0,0,0,8"
+                      VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0"
+                                Orientation="Vertical">
+                        <TextBlock Text="Yedek Kodlar"
+                                   FontWeight="SemiBold"
+                                   Foreground="#0F172A"/>
+                        <TextBlock Text="Bu kodlar otomatik oluşturulur ve Kaydet'e bastığınızda TXT olarak indirmeniz istenir."
+                                   FontSize="11"
+                                   Foreground="#475569"
+                                   Margin="0,4,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1"
+                            Content="Kodları Yeniden Oluştur"
+                            Click="GenerateBackupCodes_Click"
+                            Height="32"
+                            Padding="12,0"
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Right"/>
+                </Grid>
+
+                <ItemsControl x:Name="lstBackupCodes">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="4"
+                                    Padding="8"
+                                    Background="#F1F5F9"
+                                    CornerRadius="6">
+                                <TextBlock Text="{Binding}"
+                                           FontSize="14"
+                                           HorizontalAlignment="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="Kodlar yalnızca sizin için görünür. Kaydet işleminden önce indirmeniz istenir."
+                           FontSize="11"
+                           Foreground="#475569"
+                           Margin="0,12,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,16,0,0">
+            <Button Content="İptal"
+                    Width="100"
+                    Height="34"
+                    Margin="0,0,10,0"
+                    Click="Cancel_Click"/>
+            <Button Content="Kaydet"
+                    Width="140"
+                    Height="34"
+                    Background="#0EA5E9"
+                    Foreground="White"
+                    Click="Save_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
+

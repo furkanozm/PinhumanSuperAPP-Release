@@ -1,0 +1,13 @@
+# Cursor AI Rules for PinhumanSuperAPP
+
+## VERSION.json Güncelleme
+
+Publish işlemlerinde `organize-publish.ps1` scripti otomatik olarak VERSION.json dosyasını günceller. Versiyon değişikliği yapıldığında bu dosyayı da güncelle.
+
+## Genel Kurallar
+
+1. **Türkçe Kullanım**: Tüm kullanıcı arayüzü ve mesajlar Türkçe olmalıdır
+2. **Hata Yönetimi**: Tüm hatalar try-catch ile yakalanmalı ve kullanıcıya anlaşılır şekilde gösterilmelidir
+3. **Async/Await**: Uzun süren işlemler için async/await kullanılmalıdır
+4. **Logging**: Önemli işlemler için debug logları eklenmelidir
+

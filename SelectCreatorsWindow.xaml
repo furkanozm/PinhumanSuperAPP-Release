@@ -1,0 +1,30 @@
+﻿<Window x:Class="WebScraper.SelectCreatorsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Kişi Seçimi" Height="400" Width="400"
+        WindowStartupLocation="CenterOwner"
+        Topmost="True"
+        ResizeMode="NoResize">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="İndirme yapılacak kişileri seçin:" Margin="0,0,0,10"/>
+
+        <ListBox x:Name="lstCreators"
+                 Grid.Row="1"
+                 SelectionMode="Extended"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="btnSelectAll" Content="Tümünü Seç" Width="100" Margin="0,0,10,0" Click="btnSelectAll_Click"/>
+            <Button x:Name="btnOk" Content="Tamam" Width="100" Margin="0,0,10,0" IsDefault="True" Click="btnOk_Click"/>
+            <Button x:Name="btnCancel" Content="İptal" Width="100" IsCancel="True" Click="btnCancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window> 
+
+
+

@@ -1,0 +1,31 @@
+# Kullanıcı verileri - Güncelleme sırasında korunmalı
+# Bu dosyalar zip'den dışlanacak ve güncelleme sırasında korunacak
+
+# Konfigürasyon dosyaları
+config.json
+firebase-config.json
+pdks-config*.json
+personnel-config.json
+scraping-config.json
+
+# Kullanıcı veri dosyaları
+mail_history.json
+previously_downloaded.json
+pin_security.json
+remember_me.txt
+debug_log.txt
+
+# Veritabanı dosyaları
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Geçici dosyalar
+*.tmp
+*.temp
+*.bak
+*.backup
+

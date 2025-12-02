@@ -1,0 +1,1448 @@
+<Window x:Class="WebScraper.CompanyManagementModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WebScraper"
+        mc:Ignorable="d"
+        Title="Firma Yönetimi" Height="700" Width="1050"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        MinWidth="800" MinHeight="600"
+        WindowState="Maximized"
+        FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins">
+
+    <Window.Resources>
+        <Style x:Key="ModalButton" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentPresenter"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="#CCCCCC"/>
+                                <Setter TargetName="ContentPresenter" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#1976D2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SlimScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Track x:Name="PART_Track"
+                                   IsDirectionReversed="True"
+                                   Orientation="{TemplateBinding Orientation}">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.LineUpCommand"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  Height="0"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.LineDownCommand"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  Height="0"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Background="#CBD5F5" Margin="0,2">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="4"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="8"/>
+                    <Setter Property="Width" Value="Auto"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <local:ShiftPatternsConverter x:Key="ShiftPatternsConverter"/>
+        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid TextElement.FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Başlık -->
+        <TextBlock Grid.Row="0"
+                   Text="Firma Yönetimi"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="10"
+                   Foreground="#2E3440"/>
+
+        <!-- Ana İçerik -->
+        <TabControl Grid.Row="1" Margin="10">
+            <!-- Firma Bilgileri Tab -->
+            <TabItem Header="Firma Bilgileri" FontSize="14">
+                <Grid>
+                    <ScrollViewer x:Name="CompanyInfoScrollViewer"
+                                  VerticalScrollBarVisibility="Auto"
+                                  ScrollChanged="CompanyInfoScrollViewer_ScrollChanged"
+                                  Loaded="CompanyInfoScrollViewer_Loaded">
+                        <ScrollViewer.Resources>
+                            <Style TargetType="ScrollBar" BasedOn="{StaticResource SlimScrollBarStyle}"/>
+                        </ScrollViewer.Resources>
+                        <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Firma Kodu -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Firma Kodu:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBox x:Name="txtCompanyCode" Grid.Row="0" Grid.Column="1" Margin="5" Height="30"
+                                Text="{Binding CompanyCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <!-- Firma Adı -->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Firma Adı:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBox x:Name="txtCompanyName" Grid.Row="1" Grid.Column="1" Margin="5" Height="30"
+                                Text="{Binding CompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <!-- Firma Logosu -->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Firma Logosu:" VerticalAlignment="Center" Margin="5"/>
+                        <Grid Grid.Row="2" Grid.Column="1" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Logo Önizleme -->
+                            <Grid Grid.Column="0" 
+                                  Width="60" 
+                                  Height="60"
+                                  Margin="0,0,10,0"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="logoPreviewBorder"
+                                        BorderBrush="#E0E6F0" 
+                                        BorderThickness="1" 
+                                        CornerRadius="4"
+                                        Background="#F8F9FC">
+                                    <Image x:Name="imgLogoPreview"
+                                           Stretch="Uniform"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           MaxWidth="56"
+                                           MaxHeight="56"/>
+                                </Border>
+                                
+                                <!-- Silme Butonu (Hover'da görünür) -->
+                                <Button x:Name="btnDeleteLogo"
+                                        Click="btnDeleteLogo_Click"
+                                        Background="#F44336"
+                                        BorderThickness="0"
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Margin="0,2,2,0"
+                                        Padding="0"
+                                        Cursor="Hand"
+                                        Opacity="0"
+                                        Visibility="Collapsed"
+                                        ToolTip="Logoyu Sil">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                CornerRadius="12"
+                                                                Width="24"
+                                                                Height="24">
+                                                            <TextBlock Text="&#xE74D;"
+                                                                       FontFamily="Segoe MDL2 Assets"
+                                                                       FontSize="12"
+                                                                       Foreground="White"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                    <Button.Triggers>
+                                        <EventTrigger RoutedEvent="Button.MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="Button.MouseLeave">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                                
+                                <!-- Grid için hover trigger -->
+                                <Grid.Triggers>
+                                    <EventTrigger RoutedEvent="Grid.MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="btnDeleteLogo" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="Grid.MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="btnDeleteLogo" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Grid.Triggers>
+                            </Grid>
+                            
+                            <!-- Logo Yolu -->
+                            <TextBox Grid.Column="1"
+                                     x:Name="txtLogoPath"
+                                     Height="30"
+                                     VerticalContentAlignment="Center"
+                                     IsReadOnly="True"
+                                     Text="{Binding LogoPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     TextChanged="txtLogoPath_TextChanged"
+                                     Margin="0,0,10,0"/>
+                            
+                            <!-- Logo Seç Butonu -->
+                            <Button Grid.Column="2"
+                                    x:Name="btnSelectLogo"
+                                    Content="Logo Seç"
+                                    Width="100"
+                                    Height="30"
+                                    Click="btnSelectLogo_Click"
+                                    Style="{StaticResource ModalButton}"
+                                    Background="#2196F3"
+                                    Margin="0"
+                                    Padding="10,0"/>
+                        </Grid>
+
+                        <!-- ERP Şablonu Bilgilendirme -->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="ERP şablonu her ödeme döneminde sihirbazın ilk adımında seçilir."
+                                   Foreground="#6C757D"
+                                   FontStyle="Italic"
+                                   Margin="5,10,5,5"/>
+
+                        <!-- Ay Gün Sayısı / Bordro Dönemi -->
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Bordro Dönemi:" VerticalAlignment="Center" Margin="5"/>
+                        <Grid Grid.Row="4" Grid.Column="1" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,10,0">
+                                <TextBlock x:Name="txtPayrollPeriod"
+                                           FontSize="14"
+                                           Foreground="#333"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock x:Name="txtPayrollDetails"
+                                           FontSize="12"
+                                           Foreground="#6C757D"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="1"
+                                    x:Name="btnOpenCalendar"
+                                    Style="{StaticResource ModalButton}"
+                                    Background="#2196F3"
+                                    Width="130"
+                                    Height="32"
+                                    Margin="0,0,0,0"
+                                    Padding="0"
+                                    Click="btnOpenCalendar_Click">
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="Takvimi Aç" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Button>
+                        </Grid>
+
+                        <!-- Özel FM Ayarları -->
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Özel FM Ayarları:" VerticalAlignment="Top" Margin="5,10,5,0"/>
+                        <Border Grid.Row="5" Grid.Column="1" Margin="5,10,5,0" Background="#F8F9FC" BorderBrush="#E0E6F0" BorderThickness="1" CornerRadius="8" Padding="12">
+                            <StackPanel>
+                                <TextBlock Text="Hak edilen tatil, resmi tatil ve hafta sonu günlerinde çalışılan saatlerin hangi ERP kolonlarına aktarılacağını belirtin."
+                                           FontSize="12"
+                                           Foreground="#5D6B82"
+                                           TextWrapping="Wrap"/>
+
+                                <Grid Margin="0,10,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                        <TextBlock Text="Hak edilen tatil çalışması"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#2E3440"/>
+                                        <TextBlock Text="Kolon seç"
+                                                   FontSize="12"
+                                                   Foreground="#6C7A92"
+                                                   Margin="0,6,0,2"/>
+                                        <ComboBox Height="32"
+                                                  ItemsSource="{Binding Source={x:Static local:CompanyManagementModal.SpecialOvertimeColumnOptions}}"
+                                                  SelectedItem="{Binding SpecialOvertimeSettings.EarnedRestDayColumnName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectionChanged="EarnedRestColumnCombo_SelectionChanged"
+                                                  ToolTip="ERP şablonunda kullanılacak FM kolonunu seçin"/>
+                                        <TextBlock Text="Excel sütun harfi"
+                                                   FontSize="12"
+                                                   Foreground="#6C7A92"
+                                                   Margin="0,6,0,2"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox x:Name="txtEarnedRestLetter"
+                                                     Grid.Column="0"
+                                                     Height="30"
+                                                     Width="80"
+                                                     Text="{Binding SpecialOvertimeSettings.EarnedRestDayColumnLetter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     ToolTip="Excel sütun harfi">
+                                                <TextBox.Style>
+                                                    <Style TargetType="TextBox">
+                                                        <Setter Property="IsReadOnly" Value="True"/>
+                                                        <Setter Property="Background" Value="#F1F5F9"/>
+                                                        <Setter Property="BorderBrush" Value="#D4DAE5"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding SpecialOvertimeSettings.UseManualEarnedRestLetter}" Value="True">
+                                                                <Setter Property="IsReadOnly" Value="False"/>
+                                                                <Setter Property="Background" Value="White"/>
+                                                                <Setter Property="BorderBrush" Value="#C1C9D9"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
+                                            </TextBox>
+                                            <CheckBox Grid.Column="1"
+                                                      Margin="10,0,0,0"
+                                                      VerticalAlignment="Center"
+                                                      Content="Elle"
+                                                      IsChecked="{Binding SpecialOvertimeSettings.UseManualEarnedRestLetter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Checked="EarnedRestManualCheckbox_Changed"
+                                                      Unchecked="EarnedRestManualCheckbox_Changed"
+                                                      ToolTip="İşaretlersen manuel değer girebilirsin"/>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                        <TextBlock Text="Resmi tatil çalışması"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#2E3440"/>
+                                        <TextBlock Text="Kolon seç"
+                                                   FontSize="12"
+                                                   Foreground="#6C7A92"
+                                                   Margin="0,6,0,2"/>
+                                        <ComboBox Height="32"
+                                                  ItemsSource="{Binding Source={x:Static local:CompanyManagementModal.SpecialOvertimeColumnOptions}}"
+                                                  SelectedItem="{Binding SpecialOvertimeSettings.HolidayWorkColumnName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectionChanged="HolidayColumnCombo_SelectionChanged"
+                                                  ToolTip="ERP şablonunda kullanılacak FM kolonunu seçin"/>
+                                        <TextBlock Text="Excel sütun harfi"
+                                                   FontSize="12"
+                                                   Foreground="#6C7A92"
+                                                   Margin="0,6,0,2"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox x:Name="txtHolidayLetter"
+                                                     Grid.Column="0"
+                                                     Height="30"
+                                                     Width="80"
+                                                     Text="{Binding SpecialOvertimeSettings.HolidayWorkColumnLetter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     ToolTip="Excel sütun harfi">
+                                                <TextBox.Style>
+                                                    <Style TargetType="TextBox">
+                                                        <Setter Property="IsReadOnly" Value="True"/>
+                                                        <Setter Property="Background" Value="#F1F5F9"/>
+                                                        <Setter Property="BorderBrush" Value="#D4DAE5"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding SpecialOvertimeSettings.UseManualHolidayLetter}" Value="True">
+                                                                <Setter Property="IsReadOnly" Value="False"/>
+                                                                <Setter Property="Background" Value="White"/>
+                                                                <Setter Property="BorderBrush" Value="#C1C9D9"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
+                                            </TextBox>
+                                            <CheckBox Grid.Column="1"
+                                                      Margin="10,0,0,0"
+                                                      VerticalAlignment="Center"
+                                                      Content="Elle"
+                                                      IsChecked="{Binding SpecialOvertimeSettings.UseManualHolidayLetter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Checked="HolidayManualCheckbox_Changed"
+                                                      Unchecked="HolidayManualCheckbox_Changed"
+                                                      ToolTip="İşaretlersen manuel değer girebilirsin"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Separator Margin="0,16,0,10"/>
+
+                                <StackPanel>
+                                    <TextBlock Text="Resmi tatil tercihleri"
+                                               FontWeight="SemiBold"
+                                               Foreground="#2E3440"/>
+                                    <TextBlock Text="Yıl bazında firma için geçerli olacak resmi tatilleri seçin."
+                                               FontSize="12"
+                                               Foreground="#5D6B82"
+                                               Margin="0,4,0,10"
+                                               TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <TextBlock Text="Yıl:"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,8,0"/>
+                                        <ComboBox Width="140"
+                                                  Height="32"
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=HolidayYears}"
+                                                  SelectedItem="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=SelectedHolidayYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+
+                                    <Border Background="White"
+                                            BorderBrush="#E0E6F0"
+                                            BorderThickness="1"
+                                            CornerRadius="6">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                      MaxHeight="220"
+                                                      Padding="6">
+                                            <ScrollViewer.Resources>
+                                                <Style TargetType="ScrollBar" BasedOn="{StaticResource SlimScrollBarStyle}"/>
+                                            </ScrollViewer.Resources>
+                                            <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=HolidaySelectionItems}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Margin="0,4,0,4"
+                                                                Padding="8"
+                                                                Background="#F8FAFC"
+                                                                BorderBrush="#E2E8F0"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="150" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <CheckBox Grid.Column="0"
+                                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                                          Content="{Binding DisplayText}"
+                                                                          ToolTip="{Binding TooltipText}"
+                                                                          VerticalAlignment="Center"/>
+                                                                <ComboBox Grid.Column="1"
+                                                                          Margin="10,0,0,0"
+                                                                          Height="30"
+                                                                          VerticalAlignment="Center"
+                                                                          SelectedValue="{Binding TreatAsHalfDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                          SelectedValuePath="Tag">
+                                                                    <ComboBox.Style>
+                                                                        <Style TargetType="ComboBox">
+                                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                                            <Setter Property="Opacity" Value="0.6"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                                    <Setter Property="IsEnabled" Value="True"/>
+                                                                                    <Setter Property="Opacity" Value="1"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </ComboBox.Style>
+                                                                    <ComboBoxItem Content="Tam Gün" Tag="False"/>
+                                                                    <ComboBoxItem Content="½ Gün" Tag="True"/>
+                                                                </ComboBox>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <TextBlock Text="Her tatil satırındaki açılır menüden bu günün tam mı yarım mı sayılacağını belirleyebilirsiniz."
+                                               FontSize="11"
+                                               Foreground="#6C7A92"
+                                               Margin="0,6,0,0"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock Text="İşaretli tatiller bu firma için resmi tatil sayılır ve FM hesaplamasında kullanılacaktır."
+                                               FontSize="11"
+                                               Foreground="#6C7A92"
+                                               Margin="0,6,0,0"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Yatay Şablon Ayarları -->
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Yatay Şablon Ayarları:" VerticalAlignment="Top" Margin="5,10,5,0"/>
+                        <Border Grid.Row="6" Grid.Column="1" Margin="5,10,5,0" Background="#F8F9FC" BorderBrush="#E0E6F0" BorderThickness="1" CornerRadius="8" Padding="12">
+                            <StackPanel>
+                                <TextBlock Text="Yatay şablonlarda vardiya bilgisi olmadan çalışma ayarları"
+                                           FontSize="12"
+                                           Foreground="#5D6B82"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,10"/>
+                                
+                                <CheckBox Content="Vardiya bilgisi olmadan çalışma modunu etkinleştir"
+                                          IsChecked="{Binding HorizontalTemplateSettings.ApplyRulesWithoutShift, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          ToolTip="Yatay şablonlarda vardiya bilgisi yoksa, üst üste olan günlere göre vardiya gözetmeksizin hakediş kuralını işlet"
+                                          FontSize="13"
+                                          Margin="0,0,0,8"
+                                          Checked="HorizontalTemplateModeChanged"
+                                          Unchecked="HorizontalTemplateModeChanged"/>
+                                
+                                <TextBlock Text="Yatay şablonlarda (günlük saat tablosu) vardiya bilgisi bulunmaz. Bu ayar açıkken sistem vardiya sütunu aramaz, üst üste çalışılan günleri analiz edip tatil/eksik gün hakedişlerini otomatik hesaplar; kapalıysa seçilmiş vardiya kurallarını klasik şekilde uygular."
+                                           FontSize="11"
+                                           Foreground="#6C7A92"
+                                           TextWrapping="Wrap"
+                                           Margin="0,4,0,12"/>
+                                
+                                <!-- Tatiller Şablonda -->
+                                <CheckBox x:Name="chkHasHolidaysInTemplate"
+                                          Content="Tatiller şablonda zaten işaretli"
+                                          IsChecked="{Binding HorizontalTemplateSettings.HasHolidaysInTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          FontSize="13"
+                                          FontWeight="SemiBold"
+                                          Foreground="#2E3440"
+                                          Margin="0,0,0,8"
+                                          Checked="ChkHasHolidaysInTemplate_Changed"
+                                          Unchecked="ChkHasHolidaysInTemplate_Changed"
+                                          ToolTip="Yatay şablonda tatiller zaten işaretli ise bu seçeneği işaretleyin. Bu durumda vardiya grubu seçimi ve tatil hesaplaması yapılmaz.">
+                                    <CheckBox.Style>
+                                        <Style TargetType="CheckBox">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HorizontalTemplateSettings.ApplyRulesWithoutShift}" Value="False">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </CheckBox.Style>
+                                </CheckBox>
+                                
+                                <TextBlock Text="Bu seçenek açık olduğunda şablondaki tatil işaretlerine aynen güvenilir ve sistem ekstra tatil üretmez. Kapalı bırakırsanız üst üste gün mantığı devreye girer ve tatil hesaplamasını uygulama yapar."
+                                           FontSize="11"
+                                           Foreground="#6C7A92"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,12"/>
+                                
+                                <!-- Vardiya Grubu Seçimi -->
+                                <TextBlock Text="Vardiya Grubu:"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2E3440"
+                                           Margin="0,0,0,4"/>
+                                <ComboBox x:Name="cmbHorizontalShiftRule"
+                                          Height="32"
+                                          Margin="0,0,0,12"
+                                          DisplayMemberPath="GroupName"
+                                          SelectedValuePath="GroupName"
+                                          SelectedValue="{Binding HorizontalTemplateSettings.SelectedShiftRuleGroupName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectionChanged="HorizontalShiftRule_SelectionChanged"
+                                          ToolTip="Yatay şablonlar için kullanılacak vardiya grubunu seçin">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HorizontalTemplateSettings.HasHolidaysInTemplate}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="Background" Value="#F1F5F9"/>
+                                                    <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
+                                
+                                <!-- Üst Üste Gün Sayısı -->
+                                <TextBlock Text="Üst Üste Gün Sayısı (0 = vardiya kuralından al):"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2E3440"
+                                           Margin="0,0,0,4"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="txtOverrideConsecutiveDays"
+                                             Grid.Column="0"
+                                             Height="32"
+                                             Text="{Binding HorizontalTemplateSettings.OverrideConsecutiveDaysForVacation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             PreviewTextInput="TextBox_PreviewTextInput_Integer"
+                                             TextChanged="OverrideConsecutiveDays_TextChanged"
+                                             ToolTip="Üst üste kaç gün çalışınca tatil verileceğini belirtin. 0 ise seçili vardiya grubunun değeri kullanılır.">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HorizontalTemplateSettings.HasHolidaysInTemplate}" Value="True">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Background" Value="#F1F5F9"/>
+                                                        <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                    <TextBlock Grid.Column="1"
+                                               Text="gün"
+                                               VerticalAlignment="Center"
+                                               Margin="8,0,0,0"
+                                               Foreground="#6C7A92"/>
+                                </Grid>
+
+                                <!-- Resmi Tatil Günlerinde RT Hakedişi Ayarları -->
+                                <Separator Margin="0,12,0,12" Background="#E0E6F0"/>
+                                
+                                <TextBlock Text="Resmi Tatil Günlerinde RT Hakedişi Ayarları:"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2E3440"
+                                           Margin="0,0,0,8"/>
+                                
+                                <TextBlock Text="Resmi tatil günlerinde hangi değerlerin 'çalışma' (RT hakedişi VERİLMEYECEK) veya 'tatil' (RT hakedişi VERİLECEK) olarak algılanacağını belirleyin."
+                                           FontSize="11"
+                                           Foreground="#6C7A92"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,12"/>
+                                
+                                <!-- Çalışma Göstergeleri -->
+                                <TextBlock Text="Çalışma Göstergeleri (RT hakedişi VERİLMEYECEK):"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2E3440"
+                                           Margin="0,0,0,4"/>
+                                <TextBox x:Name="txtOfficialHolidayWorkIndicators"
+                                         Height="32"
+                                         Margin="0,0,0,12"
+                                         Text="{Binding HorizontalTemplateSettings.OfficialHolidayWorkIndicators, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Virgülle ayrılmış değerler (örn: RT,R,T). Bu değerler resmi tatil günlerinde görülürse çalışma olarak algılanır ve RT hakedişi verilmez."
+                                         FontSize="13"
+                                         Padding="8,0"/>
+                                
+                                <!-- Tatil Göstergeleri -->
+                                <TextBlock Text="Tatil Göstergeleri (RT hakedişi VERİLECEK):"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#2E3440"
+                                           Margin="0,0,0,4"/>
+                                <TextBox x:Name="txtOfficialHolidayRestIndicators"
+                                         Height="32"
+                                         Margin="0,0,0,12"
+                                         Text="{Binding HorizontalTemplateSettings.OfficialHolidayRestIndicators, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Virgülle ayrılmış değerler (örn: X,7.5). Bu değerler resmi tatil günlerinde görülürse tatil olarak algılanır ve RT hakedişi verilir."
+                                         FontSize="13"
+                                         Padding="8,0"/>
+                                
+                                <Border Background="#E8F4FD"
+                                        BorderBrush="#B3D9F2"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="8"
+                                        Margin="0,4,0,0">
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=HorizontalTemplateShiftRuleInfo}"
+                                               FontSize="11"
+                                               Foreground="#2C5F8D"
+                                               TextWrapping="Wrap"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Vardiya Grup Sayısı -->
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Vardiya Grupları:" VerticalAlignment="Center" Margin="5"/>
+                        <StackPanel Grid.Row="7" Grid.Column="1" Margin="5,5,5,5">
+                            <TextBlock FontSize="14" Foreground="#6B7280">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} grup tanımlanmış">
+                                        <Binding Path="ShiftRuleConfigs.Count"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=TemplateModeDisplay}"
+                                       FontSize="13"
+                                       Foreground="#10B981"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <!-- Kaydırma İpucu -->
+                    <Button x:Name="CompanyInfoScrollHint"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,0,40"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Visibility="Collapsed"
+                            Cursor="Hand"
+                            Click="CompanyInfoScrollHint_Click"
+                            ToolTip="İçeriğin altına in">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <ContentPresenter/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        <Border Background="#4B5563"
+                                CornerRadius="24"
+                                Padding="18,12">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="Aşağı kaydır"
+                                           FontSize="13"
+                                           FontFamily="pack://application:,,,/Fonts/Poppins-SemiBold.ttf#Poppins"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,6"/>
+                                <TextBlock x:Name="CompanyInfoScrollArrow"
+                                           Text="&#xE74B;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="28"
+                                           Foreground="#E5E7EB"
+                                           HorizontalAlignment="Center"
+                                           RenderTransformOrigin="0.5,0.5"
+                                           Opacity="0.9">
+                                    <TextBlock.RenderTransform>
+                                        <TranslateTransform Y="0"/>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation Storyboard.TargetName="CompanyInfoScrollArrow"
+                                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                         From="0"
+                                                         To="12"
+                                                         Duration="0:0:0.9"
+                                                         AutoReverse="True"/>
+                                        <DoubleAnimation Storyboard.TargetName="CompanyInfoScrollArrow"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         From="0.9"
+                                                         To="0.2"
+                                                         Duration="0:0:0.9"
+                                                         AutoReverse="True"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+            </TabItem>
+
+            <!-- Vardiya Kuralları Tab -->
+            <TabItem Header="Vardiya Kuralları" FontSize="14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Grup Yönetimi -->
+                    <Border Grid.Row="0" Background="#F0F0F0" Margin="5" Padding="10" CornerRadius="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Vardiya Kuralı Grupları" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+
+                            <Button Grid.Column="1" Width="120" Height="35"
+                                   Background="#4CAF50" Foreground="White" Margin="5,0"
+                                   Click="btnAddShiftGroup_Click" BorderThickness="0">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="10,5">
+                                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="Yeni Grup" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <Button Grid.Column="2" Width="110" Height="35"
+                                   Background="#2196F3" Foreground="White" Margin="0"
+                                   Click="btnEditShiftGroup_Click" BorderThickness="0">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="0">
+                                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="Düzenle" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <Button Grid.Column="3" Width="90" Height="35"
+                                   Background="#F44336" Foreground="White" Margin="0"
+                                   Click="btnDeleteShiftGroup_Click" BorderThickness="0">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="0">
+                                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="Sil" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Grup Listesi -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="5">
+                        <ScrollViewer.Resources>
+                            <Style TargetType="ScrollBar" BasedOn="{StaticResource SlimScrollBarStyle}"/>
+                        </ScrollViewer.Resources>
+                        <ListView x:Name="lvShiftGroups" BorderThickness="1"
+                                 SelectionMode="Single" ItemsSource="{Binding ShiftRuleConfigs}">
+                            <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Foreground" Value="#1F2937"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GridViewColumnHeader">
+                                            <Border Background="#F4F6FB"
+                                                    BorderBrush="#DDE3ED"
+                                                    BorderThickness="0,0,1,1"
+                                                    Padding="12,0,12,0"
+                                                    MinHeight="42">
+                                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="BorderBrush" Value="#DDE3ED"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#E0F2F7"/>
+                                        <Setter Property="Foreground" Value="#1976D2"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F0F8FF"/>
+                                        <Setter Property="Foreground" Value="#2196F3"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Resources>
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Grup Adı" Width="220">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#DDE3ED" BorderThickness="0,0,1,1" Padding="12,0,14,0" Background="White">
+                                                <TextBlock Text="{Binding GroupName}" FontWeight="SemiBold"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Vardiya Türleri" Width="320">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#DDE3ED" BorderThickness="0,0,1,1" Padding="12,0,14,6" Background="White">
+                                                <TextBlock TextWrapping="Wrap">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0}">
+                                                            <Binding Path="ShiftPatterns" Converter="{StaticResource ShiftPatternsConverter}"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Standart Saat" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#DDE3ED" BorderThickness="0,0,1,1" Padding="12,0,14,0" Background="White">
+                                                <TextBlock Text="{Binding StandardHours, StringFormat={}{0:0.##}}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Mola" Width="90">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#DDE3ED" BorderThickness="0,0,1,1" Padding="12,0,14,0" Background="White">
+                                                <TextBlock Text="{Binding BreakHours, StringFormat={}{0:0.##}}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Tatil Kuralları" Width="220">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#DDE3ED" BorderThickness="0,0,1,1" Padding="12,0,14,6" Background="White">
+                                                <TextBlock TextWrapping="Wrap">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} gün üst üste → {1} gün tatil">
+                                                            <Binding Path="ConsecutiveDaysForVacation"/>
+                                                            <Binding Path="VacationDays"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="FM Kuralları" Width="140">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#DDE3ED" BorderThickness="0,0,0,1" Padding="12,0,14,0" Background="White">
+                                                <TextBlock Text="{Binding OvertimeRules.Count, StringFormat={}{0} kural}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    </ScrollViewer>
+
+                    <!-- Grup Detayları -->
+                    <Border Grid.Row="2" Background="#F8F9FA" Margin="5" Padding="10" CornerRadius="5"
+                           Visibility="{Binding ElementName=lvShiftGroups, Path=SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,5">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}Seçili Grup: {0}">
+                                        <Binding ElementName="lvShiftGroups" Path="SelectedItem.GroupName"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="1" FontSize="12" Foreground="#666">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}Standart çalışma: {0}h, Mola: {1}h, Üst üste {2} gün çalışınca {3} gün tatil">
+                                        <Binding ElementName="lvShiftGroups" Path="SelectedItem.StandardHours"/>
+                                        <Binding ElementName="lvShiftGroups" Path="SelectedItem.BreakHours"/>
+                                        <Binding ElementName="lvShiftGroups" Path="SelectedItem.ConsecutiveDaysForVacation"/>
+                                        <Binding ElementName="lvShiftGroups" Path="SelectedItem.VacationDays"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Koşullar Tab -->
+            <TabItem Header="Koşullar" FontSize="14">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Açıklama ve aksiyonlar -->
+                    <Border Grid.Row="0"
+                            Background="#F8F9FC"
+                            BorderBrush="#E0E6F0"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="14"
+                            Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="Koşullu Kazançlar"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="#111827"/>
+                            <TextBlock Text="Belirli koşullara göre ERP şablonunda ek hakediş sütunlarına otomatik değer yazılmasını sağlayın. Örneğin: Devamsızlık varsa C01 İkramiye sütununa belirli bir değer yazılabilir."
+                                       FontSize="12"
+                                       Foreground="#4B5563"
+                                       Margin="0,6,0,10"
+                                       TextWrapping="Wrap"/>
+
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                <Button x:Name="btnAddConditionalRule"
+                                        Style="{StaticResource ModalButton}"
+                                        Background="#10B981"
+                                        Click="btnAddConditionalRule_Click"
+                                        Width="150"
+                                        Height="34">
+                                    <Grid HorizontalAlignment="Center"
+                                          VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="&#xE710;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Margin="0,0,6,0"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Yeni Kural"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Kural listesi -->
+                    <Border Grid.Row="1"
+                            Background="White"
+                            BorderBrush="#E0E6F0"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DataGrid x:Name="dgConditionalRules"
+                                      Grid.Row="0"
+                                      Margin="4"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      IsReadOnly="True"
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding ConditionalEarningsSettings.Rules, RelativeSource={RelativeSource AncestorType=Window}}"
+                                      SelectionChanged="dgConditionalRules_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Header="Aktif"
+                                                            Binding="{Binding IsEnabled}"
+                                                            Width="Auto"/>
+                                    <DataGridTextColumn Header="Koşul Tipi"
+                                                        Binding="{Binding ConditionType}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Operatör"
+                                                        Binding="{Binding ConditionOperator}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Değer"
+                                                        Binding="{Binding ConditionValue, StringFormat={}{0:0.##}}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Sütun Türü"
+                                                        Binding="{Binding ColumnType}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Hedef Sütun"
+                                                        Binding="{Binding TargetColumnName}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Sütun Harfi"
+                                                        Binding="{Binding TargetColumnLetter}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Kazanç Değeri"
+                                                        Binding="{Binding EarningsValue, StringFormat={}{0:0.##}}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Değer Tipi"
+                                                        Binding="{Binding ValueType}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Başlangıç Tarihi"
+                                                        Binding="{Binding StartDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Bitiş Tarihi"
+                                                        Binding="{Binding EndDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                        Width="Auto"/>
+                                    <DataGridTextColumn Header="Açıklama"
+                                                        Binding="{Binding Description}"
+                                                        Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <!-- Düzenle / Sil butonları -->
+                            <StackPanel Grid.Row="1"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        Margin="0,10,0,10">
+                                <Button x:Name="btnEditConditionalRule"
+                                        Style="{StaticResource ModalButton}"
+                                        Background="#2563EB"
+                                        Width="110"
+                                        Height="36"
+                                        Click="btnEditConditionalRule_Click"
+                                        Margin="0,0,8,0"
+                                        Padding="0"
+                                        IsEnabled="False">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="&#xE70F;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="13"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Düzenle"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="btnDeleteConditionalRule"
+                                        Style="{StaticResource ModalButton}"
+                                        Background="#DC2626"
+                                        Width="90"
+                                        Height="36"
+                                        Click="btnDeleteConditionalRule_Click"
+                                        Padding="0"
+                                        IsEnabled="False">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="&#xE74D;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="13"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Sil"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Veri Şablonları Tab -->
+            <TabItem Header="Veri Şablonları" FontSize="14">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Açıklama ve aksiyonlar -->
+                    <Border Grid.Row="0"
+                            Background="#F8F9FC"
+                            BorderBrush="#E0E6F0"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="14"
+                            Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="Veri Şablonları"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Foreground="#111827"/>
+                            <TextBlock Text="Farklı PDKS / yatay Excel formatlarını tek bir iç modele dönüştürmek için şablonlar tanımlayın. Sistem yeni dosya geldiğinde en uygun şablonu otomatik seçecektir."
+                                       FontSize="12"
+                                       Foreground="#4B5563"
+                                       Margin="0,6,0,10"
+                                       TextWrapping="Wrap"/>
+
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                <Button x:Name="btnAddDataTemplate"
+                                        Style="{StaticResource ModalButton}"
+                                        Background="#10B981"
+                                        Click="btnAddDataTemplate_Click"
+                                        Width="150"
+                                        Height="34">
+                                    <Grid HorizontalAlignment="Center"
+                                          VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="&#xE710;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   Margin="0,0,6,0"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Yeni Şablon"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Şablon listesi -->
+                    <Border Grid.Row="1"
+                            Background="White"
+                            BorderBrush="#E0E6F0"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DataGrid x:Name="dgDataTemplates"
+                                      Grid.Row="0"
+                                      Margin="4"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      IsReadOnly="True"
+                                      ItemsSource="{Binding DataTemplates, RelativeSource={RelativeSource AncestorType=Window}}"
+                                      SelectedIndex="0">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="" Width="Auto">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock FontFamily="Segoe MDL2 Assets" 
+                                                           FontSize="16" 
+                                                           VerticalAlignment="Center" 
+                                                           HorizontalAlignment="Center"
+                                                           Margin="8,0"
+                                                           Foreground="#646F82">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="&#xE8A5;"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding TemplateType}" Value="PDKS_Log">
+                                                                    <Setter Property="Text" Value="&#xE8A5;"/>
+                                                                    <Setter Property="Foreground" Value="#3B82F6"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding TemplateType}" Value="Horizontal_DailyHours">
+                                                                    <Setter Property="Text" Value="&#xE8B1;"/>
+                                                                    <Setter Property="Foreground" Value="#22C55E"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Şablon Adı"
+                                                        Binding="{Binding Name}"
+                                                        Width="2*"/>
+                                    <DataGridTextColumn Header="Tür"
+                                                        Binding="{Binding TemplateTypeDisplay}"
+                                                        Width="*"/>
+                                    <DataGridTextColumn Header="Kaynak"
+                                                        Binding="{Binding SourceHint}"
+                                                        Width="2*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <!-- Düzenle / Sil butonları -->
+                            <StackPanel Grid.Row="1"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        Margin="0">
+                                <Button x:Name="btnEditDataTemplate"
+                                        Style="{StaticResource ModalButton}"
+                                        Background="#2563EB"
+                                        Width="110"
+                                        Height="30"
+                                        Click="btnEditDataTemplate_Click"
+                                        Margin="0"
+                                        Padding="0">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="&#xE70F;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="13"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Düzenle"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+
+                                <Button x:Name="btnDeleteDataTemplate"
+                                        Style="{StaticResource ModalButton}"
+                                        Background="#DC2626"
+                                        Width="90"
+                                        Height="30"
+                                        Click="btnDeleteDataTemplate_Click"
+                                        Padding="0">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="&#xE74D;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="13"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Sil"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="2"
+                                       Margin="10,4"
+                                       FontSize="11"
+                                       Foreground="#6B7280"
+                                       Text="İpucu: Henüz şablon eklemediyseniz, sistem varsayılan PDKS formatını kullanır. Yatay gün-saat tabloları için örnek bir dosya ile yeni şablon oluşturabilirsiniz."
+                                       TextWrapping="Wrap"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Butonlar -->
+        <Border Grid.Row="2" Background="#F0F0F0" Padding="15" CornerRadius="0,0,5,5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnDelete" Style="{StaticResource ModalButton}"
+                       Background="#F44336" Foreground="White"
+                       Click="btnDelete_Click" Visibility="Collapsed">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Firmayı Sil" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+                <Button x:Name="btnSave" Style="{StaticResource ModalButton}"
+                       Background="#4CAF50" Foreground="White"
+                       Click="btnSave_Click">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Kaydet" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+                <Button x:Name="btnCancel" Style="{StaticResource ModalButton}"
+                       Background="#757575" Foreground="White"
+                       Click="btnCancel_Click">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="İptal" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

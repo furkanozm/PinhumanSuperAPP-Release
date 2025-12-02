@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>PinhumanSuperAPP</id>
+    <version>1.0.1</version>
+    <title>PinhumanSuperAPP</title>
+    <authors>Pinhuman</authors>
+    <owners>Pinhuman</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>PinhumanSuperAPP Desktop Application</description>
+    <releaseNotes>Kilit ekranındaki kilit iconuna basınca açılan modal kaldırıldı</releaseNotes>
+  </metadata>
+  <files>
+    <file src="dist\**\*.*" target="lib\net472\" exclude="dist\dist.zip" />
+  </files>
+</package>
+

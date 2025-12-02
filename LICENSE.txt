@@ -1,0 +1,22 @@
+GÜLERYÜZ GROUP - ÖDEME EMRİ OLUŞTURUCU
+LİSANS ANLAŞMASI
+
+Bu yazılım Güleryüz Group için özel olarak geliştirilmiştir.
+
+Telif Hakkı (c) 2025 Güleryüz Group
+Geliştirici: Furkan ÖZMEN
+
+Bu yazılımın kullanımı, kopyalanması, dağıtılması ve/veya değiştirilmesi
+Güleryüz Group'un yazılı izni olmadan yasaktır.
+
+Bu yazılım "olduğu gibi" sağlanmaktadır ve hiçbir garanti verilmemektedir.
+Geliştirici, bu yazılımın kullanımından doğabilecek herhangi bir zarardan
+sorumlu değildir.
+
+Kullanım Koşulları:
+1. Bu yazılım sadece Güleryüz Group çalışanları tarafından kullanılabilir
+2. Yazılımın kopyalanması, dağıtılması veya satılması yasaktır
+3. Yazılımın tersine mühendisliği yapılamaz
+4. Yazılımın kaynak kodu gizli tutulmalıdır
+
+Bu lisans anlaşmasını kabul ederek yazılımı kullanmaya başlayabilirsiniz. 

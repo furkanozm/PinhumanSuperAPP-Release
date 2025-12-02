@@ -1,0 +1,108 @@
+﻿<Window x:Class="WebScraper.PageSizeSelectionModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title=" Sayfa Boyutu Seçimi"
+        Height="350"
+        Width="650"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        FontFamily="Fonts/Poppins-Regular.ttf#Poppins"
+>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Başlık -->
+        <TextBlock Grid.Row="0"
+                   Text=" Sayfa Boyutu Seçimi"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Margin="0,0,0,15"
+                   HorizontalAlignment="Center"/>
+
+        <!-- Bilgi Kutusu -->
+        <Border Grid.Row="1"
+                Background="#E3F2FD"
+                BorderBrush="#2196F3"
+                BorderThickness="1"
+                CornerRadius="5"
+                Padding="15"
+                Margin="0,0,0,15">
+            <TextBlock Text="💡 Sayfa boyutu, bir seferde kaç adet ödeme emri gösterileceğini belirler. Az öğe sayısı daha hızlı işlem yapar, çok öğe sayısı daha kapsamlı tarama sağlar."
+                       TextWrapping="Wrap"
+                       Foreground="#1565C0"/>
+        </Border>
+
+        <!-- Sayfa Boyutu Seçimi -->
+        <Grid Grid.Row="2" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="Sayfa Boyutu:"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"
+                       Margin="0,0,15,0"/>
+
+            <ComboBox Grid.Column="1"
+                      x:Name="PageSizeComboBox"
+                      Width="150"
+                      HorizontalAlignment="Left"
+                      SelectionChanged="PageSizeComboBox_SelectionChanged">
+                <ComboBoxItem Content="5 öğe"/>
+                <ComboBoxItem Content="15 öğe"/>
+                <ComboBoxItem Content="60 öğe"/>
+                <ComboBoxItem Content="120 öğe"/>
+            </ComboBox>
+        </Grid>
+
+        <!-- Uyarı Metni -->
+        <Border Grid.Row="3"
+                x:Name="WarningBorder"
+                Background="#FFF3E0"
+                BorderBrush="#FF9800"
+                BorderThickness="1"
+                CornerRadius="5"
+                Padding="15"
+                Margin="0,0,0,15"
+                Visibility="Visible">
+            <TextBlock x:Name="WarningTextBlock"
+                       Text=" Sayfa boyutu seçiniz..."
+                       TextWrapping="Wrap"
+                       Foreground="Black"/>
+        </Border>
+
+        <!-- Butonlar -->
+        <StackPanel Grid.Row="4"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button x:Name="CancelButton"
+                    Content="İptal"
+                    Click="CancelButton_Click"
+                    Width="80"
+                    Height="30"
+                    Margin="0,0,10,0"/>
+            <Button x:Name="StartButton"
+                    Content="Başlat"
+                    Click="StartButton_Click"
+                    Width="80"
+                    Height="30"
+                    Background="#007ACC"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    IsEnabled="False"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+
+
+

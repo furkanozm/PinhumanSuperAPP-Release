@@ -1,0 +1,115 @@
+<Window x:Class="WebScraper.UpdateNotesModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Güncelleme Mevcut" 
+        Height="450" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins"
+        Background="#F5F5F5">
+    
+    <Window.Resources>
+        <Style x:Key="ModalButton" TargetType="Button">
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentPresenter" 
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#1976D2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2196F3" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="📦 Güncelleme Mevcut" 
+                           FontSize="22" 
+                           FontFamily="pack://application:,,,/Fonts/Poppins-Bold.ttf#Poppins"
+                           FontWeight="Normal" 
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Content -->
+        <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                CornerRadius="8" Padding="40" Margin="0,0,0,20">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="✨" 
+                           FontSize="64" 
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,20"/>
+                <TextBlock x:Name="txtUpdateMessage" 
+                           Text="Yeni güncelleme mevcut!" 
+                           FontSize="24" 
+                           FontWeight="Bold"
+                           Foreground="#2196F3"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"
+                           Margin="0,0,0,10"/>
+                <TextBlock x:Name="txtUpdateSubMessage" 
+                           Text="Güncellemeleri indirmek için aşağıdaki butona tıklayın." 
+                           FontSize="14" 
+                           Foreground="#757575"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                CornerRadius="8" Padding="15">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnClose" 
+                        Content="Kapat" 
+                        Style="{StaticResource ModalButton}"
+                        Width="100"
+                        Margin="0,0,10,0"
+                        Click="btnClose_Click"/>
+                <Button x:Name="btnDownload" 
+                        Content="Güncellemeleri İndir" 
+                        Width="180"
+                        Click="btnDownload_Click">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ModalButton}">
+                            <Setter Property="Background" Value="#4CAF50"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#45A049"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
+

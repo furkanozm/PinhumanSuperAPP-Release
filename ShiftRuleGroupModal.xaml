@@ -1,0 +1,466 @@
+<Window x:Class="WebScraper.ShiftRuleGroupModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WebScraper"
+        mc:Ignorable="d"
+        Title="Vardiya Kuralı Grubu" Height="600" Width="700"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        MinWidth="600" MinHeight="500"
+        FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins">
+
+    <Window.Resources>
+        <Style x:Key="ModalButton" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="ContentPresenter"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="#CCCCCC"/>
+                                <Setter TargetName="ContentPresenter" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#1976D2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid TextElement.FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Başlık -->
+        <TextBlock Grid.Row="0"
+                   Text="{Binding TitleText}"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="10"
+                   Foreground="#2E3440"/>
+
+        <!-- Ana İçerik -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Grup Adı -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Grup Adı:" VerticalAlignment="Center" Margin="5"/>
+                <TextBox x:Name="txtGroupName" Grid.Row="0" Grid.Column="1" Margin="5" Height="30"
+                        Text="{Binding GroupName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- Vardiya Türleri -->
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Vardiya Türleri:" VerticalAlignment="Top" Margin="5,10"/>
+                <Grid Grid.Row="1" Grid.Column="1" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Örnekler -->
+                    <TextBlock Grid.Row="0" Text="Örnek: 08:00-17:00 (1.0 saat mola), 09:00-18:00 (0.5 saat mola)" FontSize="11" Foreground="#666" Margin="0,0,0,5"/>
+
+                    <!-- Vardiya Ekle -->
+                    <Grid Grid.Row="1" Margin="0,0,0,5" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Başlangıç:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Grid.Column="1" x:Name="txtShiftStartTime" Height="28" Margin="0,0,10,0"
+                                PreviewTextInput="TextBox_PreviewTextInput_Time"
+                                TextChanged="TextBox_Time_TextChanged"
+                                 MaxLength="5"/>
+                        <TextBlock Grid.Column="2" Text="Bitiş:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Grid.Column="3" x:Name="txtShiftEndTime" Height="28" Margin="0,0,10,0"
+                                PreviewTextInput="TextBox_PreviewTextInput_Time"
+                                TextChanged="TextBox_Time_TextChanged"
+                                 MaxLength="5"/>
+                        <TextBlock Grid.Column="4" Text="Mola:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBox Grid.Column="5" x:Name="txtShiftBreakTime" Height="28" Margin="0,0,10,0"
+                                 PreviewTextInput="TextBox_PreviewTextInput_Time"
+                                 MaxLength="5"/>
+                        <Button Grid.Column="6" MinWidth="80" Height="32"
+                               Background="#4CAF50" Foreground="White"
+                               Click="btnAddShiftType_Click" BorderThickness="0">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="10,5">
+                                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Ekle" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+
+                    <StackPanel Grid.Row="2" Margin="0,10,0,5">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Mapping Alternatifleri"
+                                       FontWeight="SemiBold"
+                                       Foreground="#333"
+                                       Margin="0,0,8,0"/>
+                            <Border Background="#2196F3"
+                                    CornerRadius="10"
+                                    Padding="2"
+                                    VerticalAlignment="Center"
+                                    ToolTip="PDKS kaynak dosyasında vardiya adları farklı yazılabilir. Örneğin 08-16, 8*16, 08:00-16:00 gibi formatlar yakalanır ve bu gruba bağlanır.">
+                                <TextBlock Text="i"
+                                           Foreground="White"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           Width="14"
+                                           Height="14"
+                                           TextAlignment="Center"/>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,6">
+                            <Button x:Name="btnGenerateMappings"
+                                    Content="Alternatifleri Oluştur"
+                                    Width="160"
+                                    Height="28"
+                                    Background="#2196F3"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Margin="0,0,10,0"
+                                    Click="btnGenerateMappings_Click"/>
+                        </StackPanel>
+                        <ListBox x:Name="lbShiftMappings"
+                                 Height="110"
+                                 ItemsSource="{Binding ShiftPatternMappings}"/>
+                    </StackPanel>
+
+                    <ListBox x:Name="lbShiftTypes" Grid.Row="3" Height="80" Margin="0,0,0,5"
+                            ItemsSource="{Binding ShiftPatterns}" SelectionMode="Single"/>
+
+                    <!-- Silme Butonu -->
+                    <Button x:Name="btnRemoveShiftType" Grid.Row="4" Width="140" Height="35"
+                           Background="#F44336" Foreground="White" HorizontalAlignment="Left" Margin="0,5,0,0"
+                           Click="btnRemoveShiftType_Click" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="10,5">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="Seçili Vardiyayı Sil" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button x:Name="btnEditShiftType" Grid.Row="4" Width="200" Height="35"
+                            Background="#FFC107" Foreground="White" HorizontalAlignment="Right" Margin="0,5,0,0"
+                            Click="btnEditShiftType_Click" BorderThickness="0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="10,5">
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="Seçili Vardiyayı Düzenle" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <!-- Tümünü Kapsa -->
+                    <CheckBox x:Name="chkAllShifts" Grid.Row="5" Content="Tüm vardiya türlerini kapsa (*)"
+                             IsChecked="{Binding IsAllShifts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5,0,0"/>
+                </Grid>
+
+                <!-- Standart Saatler -->
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Standart Saat:" VerticalAlignment="Center" Margin="5"/>
+                <TextBox x:Name="txtStandardHours" Grid.Row="2" Grid.Column="1" Margin="5" Height="30"
+                        Text="{Binding StandardHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        PreviewTextInput="TextBox_PreviewTextInput_Double"
+                        MaxLength="4"/>
+
+                <!-- Mola Süresi -->
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Mola Süresi (saat):" VerticalAlignment="Center" Margin="5"/>
+                <TextBox x:Name="txtBreakHours" Grid.Row="3" Grid.Column="1" Margin="5" Height="30"
+                        Text="{Binding BreakHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        PreviewTextInput="TextBox_PreviewTextInput_Double"
+                        MaxLength="3"/>
+
+                <!-- Tatil Kuralları -->
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Tatil Kuralları:" VerticalAlignment="Center" Margin="5"/>
+                <Grid Grid.Row="4" Grid.Column="1" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Üst üste" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBox x:Name="txtConsecutiveDays" Grid.Column="1" Width="50" Height="30" Margin="0,0,5,0"
+                            Text="{Binding ConsecutiveDaysForVacation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            PreviewTextInput="TextBox_PreviewTextInput_Integer"
+                            MaxLength="2"/>
+                    <TextBlock Grid.Column="2" Text="gün çalışınca" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBox x:Name="txtVacationDays" Grid.Column="3" Width="50" Height="30" Margin="0,0,5,0"
+                            Text="{Binding VacationDays, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            PreviewTextInput="TextBox_PreviewTextInput_Integer"
+                            MaxLength="2"/>
+                    <TextBlock Grid.Column="4" Text="gün tatil ver" VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- Fazla Mesai Kuralları -->
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="FM Kuralları:" VerticalAlignment="Top" Margin="5,10"/>
+                <Grid Grid.Row="5" Grid.Column="1" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Vardiya Seçimi -->
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Vardiya Seç:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <ComboBox Grid.Column="1" x:Name="cbSelectedShift" Height="30" Margin="0,0,5,0"
+                                  ItemsSource="{Binding CurrentGroup.ShiftPatterns}"
+                                  DisplayMemberPath="."
+                                  SelectedIndex="0"/>
+                        <Button Grid.Column="2" Width="35" Height="35"
+                               Background="#2196F3" Foreground="White"
+                               ToolTip="Vardiya listesini güncelle"
+                               Click="btnRefreshShiftList_Click" BorderThickness="0">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="8">
+                                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+
+                    <!-- Normal Çalışma Saati -->
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Günlük Normal Çalışma:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Grid.Column="1" x:Name="txtNormalWorkingHours" Height="30" Margin="0,0,10,0"
+                                PreviewTextInput="TextBox_PreviewTextInput_Double"
+                                MaxLength="4" Text="7.5"/>
+                        <TextBlock Grid.Column="2" Text="saat (mola hariç)" VerticalAlignment="Center" Foreground="#666"/>
+                    </Grid>
+
+                    <!-- Vardiya Aralığı -->
+                    <Grid Grid.Row="2" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Vardiya Aralığı:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Grid.Column="1" x:Name="txtShiftDuration" Height="30" Margin="0,0,10,0"
+                                PreviewTextInput="TextBox_PreviewTextInput_Double"
+                                MaxLength="4" Text="{Binding CurrentGroup.ShiftDuration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Grid.Column="2" Text="saat (mola dahil)" VerticalAlignment="Center" Foreground="#666"/>
+                    </Grid>
+
+                    <!-- FM Atama Seçenekleri -->
+                    <Grid Grid.Row="3" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="FM Atamaları:" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                        <CheckBox Grid.Column="1" x:Name="chkAssignNormalFM" Content="Normal FM (7.5 saat üzeri)"
+                                  VerticalAlignment="Center" Margin="0,0,20,0" IsChecked="True"/>
+                        <CheckBox Grid.Column="2" x:Name="chkAssign50PercentFM" Content="%50 FM (vardiya aralığı üzeri)"
+                                  VerticalAlignment="Center" Margin="0,0,20,0" IsChecked="True"/>
+                        <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="btnUpdateFMRules" Width="170" Height="35"
+                                    Background="#2196F3" Foreground="White" Margin="10,0,0,0"
+                                    Click="btnUpdateFMRules_Click" BorderThickness="0">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="10,5">
+                                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="FM Kuralını Güncelle" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button x:Name="btnOpenConfigFile" Width="170" Height="35"
+                                    Background="#607D8B" Foreground="White" Margin="10,0,0,0"
+                                    Click="btnOpenConfigFile_Click" BorderThickness="0">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="10,5">
+                                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="Config Dosyasını Aç" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Açıklamalar -->
+                    <Border Grid.Row="4" Background="#F8F9FA" CornerRadius="4" Padding="10" Margin="0,5,0,0"
+                            BorderBrush="#D3D8DE" BorderThickness="1.5">
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#666">
+                            <Run Text="Nasıl Çalışır:" FontWeight="SemiBold"/><LineBreak/>
+                            <Run Text="• "/><Run Text="Normal çalışma saati aşımı"/><Run Text=" → FM Normal kolonuna"/><LineBreak/>
+                            <Run Text="• "/><Run Text="Vardiya aralığı aşımı"/><Run Text=" → FM %50 kolonuna"/><LineBreak/>
+                            <Run Text="Örnek: 7.5 saat normal, 9 saat vardiya aralığı ise:"/><LineBreak/>
+                            <Run Text="7.5-9 saat arası → FM Normal, 9+ saat → FM %50"/>
+                        </TextBlock>
+                    </Border>
+                </Grid>
+
+                <!-- Devamsızlık Kolonu -->
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Devamsızlık Kolonu:" VerticalAlignment="Center" Margin="5"/>
+                <Grid Grid.Row="6" Grid.Column="1" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBox x:Name="txtAbsentColumn"
+                                 Height="30"
+                                 MaxLength="3"
+                                 CharacterCasing="Upper"
+                                 Text="{Binding AbsentDaysColumnLetter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="TextBox_PreviewTextInput_LettersOnly"
+                                 ToolTip="Eksik günlerin yazılacağı Excel kolonu (örn: K, AA)"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                        <ComboBox x:Name="cmbAbsentColumnOptions"
+                                  Height="30"
+                                  ItemsSource="{Binding EksColumnOptions}"
+                                  DisplayMemberPath="Display"
+                                  SelectedValuePath="ColumnLetter"
+                                  SelectionChanged="cmbAbsentColumnOptions_SelectionChanged"
+                                  ToolTip="Şablondaki hazır eksik gün kolonlarını seçebilirsiniz"/>
+                        <TextBlock Text="Örnek: K (EKS-15 Devamsızlık). Listeden seçim yaptığınızda otomatik doldurulur; dilerseniz manuel harf de girebilirsiniz."
+                                   Margin="0,6,0,0"
+                                   Foreground="#666"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Butonlar -->
+        <Border Grid.Row="2" Background="#F0F0F0" Padding="15" CornerRadius="0,0,5,5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnSave" Style="{StaticResource ModalButton}"
+                       Background="#4CAF50" Foreground="White" FontWeight="SemiBold"
+                       Click="btnSave_Click">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Kaydet" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+                <Button x:Name="btnCancel" Style="{StaticResource ModalButton}"
+                       Background="#757575" Foreground="White"
+                       Click="btnCancel_Click">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="İptal" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

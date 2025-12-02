@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs card-header-tabs pull-right" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active show" href="#tab-identity" data-toggle="tab" role="tab" aria-selected="true">KİMLİK BİLGİLERİ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tab-extra" data-toggle="tab" role="tab" aria-selected="true">EKSTRA BİLGİLERİ</a>
+                    </li>
+                    <li class="nav-item" id="bankTab">
+                        <a class="nav-link" href="#tab-bank" data-toggle="tab" role="tab" aria-selected="true">BANKA BİLGİLERİ</a>
+                    </li>
+                </ul>

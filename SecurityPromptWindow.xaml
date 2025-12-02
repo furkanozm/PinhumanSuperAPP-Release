@@ -1,0 +1,130 @@
+<Window x:Class="WebScraper.SecurityPromptWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Güvenlik Doğrulaması"
+        Width="460"
+        Height="480"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FontFamily="pack://application:,,,/Fonts/Poppins-Regular.ttf#Poppins">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="Güvenlik doğrulaması"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Foreground="#0F172A"/>
+            <TextBlock Text="Devam etmek için PIN, yedek kod veya güvenlik sorularını kullanabilirsiniz."
+                       FontSize="12"
+                       Foreground="#475569"/>
+        </StackPanel>
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="PIN">
+                <StackPanel Margin="10">
+                    <TextBlock Text="6 haneli PIN'inizi girin."
+                               Foreground="#475569"
+                               FontSize="12"
+                               Margin="0,0,0,8"/>
+                    <PasswordBox x:Name="pinEntry"
+                                 Height="36"
+                                 FontSize="18"
+                                 MaxLength="6"
+                                 PreviewTextInput="NumericOnly_PreviewTextInput"
+                                 KeyDown="PinEntry_KeyDown"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,14,0,0">
+                        <Button Content="PIN ile Giriş"
+                                Width="140"
+                                Height="34"
+                                Background="#0EA5E9"
+                                Foreground="White"
+                                Click="ValidatePin_Click"/>
+                    </StackPanel>
+                    <Border Margin="0,20,0,0"
+                            Padding="20"
+                            Background="#F8FAFC"
+                            BorderBrush="#E2E8F0"
+                            BorderThickness="1"
+                            CornerRadius="10">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="🔒"
+                                       FontSize="54"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="PIN doğrulaması hesabınızı korur."
+                                       Margin="0,8,0,0"
+                                       FontSize="12"
+                                       Foreground="#475569"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Yedek Kod">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Kullanılmamış bir yedek kod girin."
+                               Foreground="#475569"
+                               FontSize="12"
+                               Margin="0,0,0,8"/>
+                    <PasswordBox x:Name="backupCodeEntry"
+                                 Height="36"
+                                 FontSize="18"
+                                 PreviewTextInput="NumericOnly_PreviewTextInput"
+                                 MaxLength="6"
+                                 KeyDown="BackupCodeEntry_KeyDown"/>
+                    <TextBlock Text="Yedek kodlar tek kullanımlıktır."
+                               FontSize="11"
+                               Foreground="#EF4444"
+                               Margin="0,6,0,0"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,14,0,0">
+                        <Button Content="Yedek Kodla Giriş"
+                                Width="160"
+                                Height="34"
+                                Click="ValidateBackupCode_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Güvenlik Soruları">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Her iki soruyu da eksiksiz yanıtlayın."
+                               Foreground="#475569"
+                               FontSize="12"
+                               Margin="0,0,0,8"/>
+                    <TextBlock x:Name="question1Text"
+                               Text="Soru 1"
+                               FontWeight="SemiBold"/>
+                    <TextBox x:Name="answer1Entry"
+                             Margin="0,4,0,12"
+                             Height="34"
+                             KeyDown="SecurityAnswers_KeyDown"/>
+                    <TextBlock x:Name="question2Text"
+                               Text="Soru 2"
+                               FontWeight="SemiBold"/>
+                    <TextBox x:Name="answer2Entry"
+                             Margin="0,4,0,12"
+                             Height="34"
+                             KeyDown="SecurityAnswers_KeyDown"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,14,0,0">
+                        <Button Content="Sorularla Giriş"
+                                Width="150"
+                                Height="34"
+                                Click="ValidateQuestions_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
+
